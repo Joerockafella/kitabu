@@ -1,2 +1,2 @@
 web: gunicorn application:app --log-file -
-release: python import.py db upgrade
+release: python application.py db upgrade
