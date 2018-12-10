@@ -25,8 +25,8 @@ db = scoped_session(sessionmaker(bind=engine))
 @app.route("/")
 @app.route("/home")
 def index():
+    
     books = db.execute("SELECT isbn, title, author, year FROM books").fetchall()
-   
     return render_template("index.html", title='Home', books=books)
 
 if __name__ == "__main__":

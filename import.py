@@ -16,10 +16,11 @@ def main():
     db.execute("CREATE TABLE books (isbn VARCHAR PRIMARY KEY,title VARCHAR NOT NULL,author VARCHAR NOT NULL,year VARCHAR NOT NULL)")
     f=open("books.csv")
     reader =csv.reader(f)
-    for isbn,title,author,year in reader:
-        db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn,:title,:author,:year)",{"isbn":isbn,"title":title,"author":author,"year":year})
-        
-        print("done")            
+    for isbn, title, author, year in reader:
+        if year == "year":
+            print('skipped first line')
+        else:
+            db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn,:title,:author,:year)", {"isbn":isbn,"title":title,"author":author,"year":year})           
     db.commit() 
 
 if __name__ == "__main__":
