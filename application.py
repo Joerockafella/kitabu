@@ -1,6 +1,8 @@
 import os
+import requests
+import json
 
-from flask import Flask, session, render_template
+from flask import Flask, session, render_template, request, redirect, url_for, Markup
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -20,11 +22,12 @@ Session(app)
 engine = create_engine(os.getenv("DATABASE_URL"))
 db = scoped_session(sessionmaker(bind=engine))
 
-@app.route("/home")
 @app.route("/")
+@app.route("/home")
 def index():
-    return render_template('index.html', title='Home')
-
+    books = db.execute("SELECT isbn, title, author, year FROM books").fetchall()
+   
+    return render_template("index.html", title='Home', books=books)
 
 if __name__ == "__main__":
     app.run(debug=True)

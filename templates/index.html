@@ -10,7 +10,7 @@
             <hr>    
             <p>This is a book review website. Search for books, leave reviews, and see the reviews made by other people.</p>
             <div class="input-group mt-4">
-                <form class="form-inline m-auto" action="/action_page.php">
+                <form class="form-inline m-auto" action="{{url_for('index')}}" method="POST">
                 <input type="text" class="form-control" name="search" placeholder="Title/ Author / ISBN">
                     <div class="input-group-append">
                         <button class="btn btn-dark" type="submit">
@@ -20,6 +20,19 @@
                 </form>
             </div>
         </div>
-        <p>TODO:</p>            
+        <p>TODO:</p> 
+        <div class='container bg-light h-25 p-3'>
+            <h3 class='text-center p-3'>{{ message }}</h3>   
+            <div class="list-group">
+                {% for book in books %}
+                <ul>
+                    <li>{{book.isbn}}</li>
+                    <li>{{book.title}}</li>
+                    <li>{{book.author}}</li>
+                    <li>{{book.year}}</li>
+                </ul>
+                {% endfor %}
+            </div>
+        </div>            
     </div>
 {% endblock main %}

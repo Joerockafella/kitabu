@@ -17,13 +17,10 @@ def main():
     f=open("books.csv")
     reader =csv.reader(f)
     for isbn,title,author,year in reader:
-        if year == "year":
-            print('skipped first line')
-        else:    
-            db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:a,:b,:c,:d)",{"a":isbn,"b":title,"c":author,"d":year})
+        db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn,:title,:author,:year)",{"isbn":isbn,"title":title,"author":author,"year":year})
         
-    print("done")            
-db.commit() 
+        print("done")            
+    db.commit() 
 
 if __name__ == "__main__":
     main()
