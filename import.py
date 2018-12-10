@@ -20,7 +20,8 @@ def main():
         if year == "year":
             print('skipped first line')
         else:
-            db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn,:title,:author,:year)", {"isbn":isbn,"title":title,"author":author,"year":year})           
+            db.execute("INSERT INTO books (isbn, title, author, year) VALUES (:isbn,:title,:author,:year)", {"isbn":isbn,"title":title,"author":author,"year":year})    
+            print('done')       
     db.commit() 
 
 if __name__ == "__main__":
