@@ -30,13 +30,22 @@
                   <div class="navbar-nav mr-auto">
                     <a class="nav-item nav-link p-0" href="{{ url_for('index') }}"><i class="fa fa-home m-0 p-0" style="font-size:34px;"></i></a>
                   </div>
-    
+                  <!-- Navbar Right Side -->
+                  <div class="navbar-nav">
+                      
+                          <a class="nav-item nav-link" href="{{ url_for('index') }}">Account</a>
+                          <a class="nav-item nav-link" href="{{ url_for('index') }}">Logout</a>
+                      
+                          <a class="nav-item nav-link" href="{{ url_for('index') }}">Login</a>
+                          <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                      
+                  </div>
                 </div>
               </div>
             </nav>
         </header>
         <main>
-                {% block main %}{% endblock %}
+                {% block main %}{% endblock main %}
         </main>
 
 		 <!-- jQuery first, then Popper.js, then Bootstrap JS -->
