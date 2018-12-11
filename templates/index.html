@@ -13,24 +13,30 @@
                 <form class="form-inline m-auto" action="{{url_for('index')}}" method="POST">
                 <input type="text" class="form-control" name="search" placeholder="Title/ Author / ISBN">
                     <div class="input-group-append">
-                        <button class="btn btn-dark" type="submit">
+                        <button class="btn btn-secondary" type="submit">
                         <i class="fa fa-search"></i>
                         </button>
                     </div>
                 </form>
             </div>
         </div>
-        <div class='container bg-light h-25 p-3'> 
-            <div class="list-group">
+        <div class='container h-25 p-3'> 
+            <div class="row">
                 {% for book in books %}
-                <ul>
-                    <li>{{book.isbn}}</li>
-                    <li>{{book.title}}</li>
-                    <li>{{book.author}}</li>
-                    <li>{{book.year}}</li>
-                </ul>
+                    <div class="card-deck col-sm-4 mx-auto mb-4">
+                        <div class="card bg-light shadow">
+                            <div class="card-body">
+                                <p class="card-text text-danger">{{book.isbn}}</p>
+                                <hr>
+                                <h4 class="card-title text-info">{{book.title}}</h4>
+                                <p class="card-text text-info">{{book.author}}</p>
+                                <p class="card-text text-info">{{book.year}}</p>
+                                <a href="#" class="btn btn-danger">See more</a>  
+                            </div>
+                        </div>   
+                    </div>
                 {% endfor %}
-            </div>
+            </div>   
         </div>            
     </div>
 {% endblock main %}
