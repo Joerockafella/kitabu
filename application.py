@@ -2,7 +2,7 @@ import os
 import requests
 import json
 
-from flask import Flask, session, render_template, request, redirect, url_for, Markup
+from flask import Flask, session, render_template, request, redirect, url_for, Markup, flash
 from flask_session import Session
 from sqlalchemy import create_engine
 from sqlalchemy.orm import scoped_session, sessionmaker
@@ -34,11 +34,20 @@ def index():
 @app.route("/register", methods=['GET', 'POST'])
 def register():
     form = RegistrationForm()
+    if form.validate_on_submit():
+        flash(f'Hey {form.username.data}, your account has been created.', 'success')
+        return redirect(url_for('index'))
     return render_template("register.html", title='Register', form=form)
 
-@app.route("/login")
+@app.route("/login", methods=['GET', 'POST'])
 def login():
     form = LoginForm()
+    if form.validate_on_submit():
+        if form.email.data == 'joe@mail.com' and form.password.data == 'testing':
+            flash('Hi {form.username.data}, you have been logged in successfly!', 'success')
+            return redirect(url_for('index'))
+        else:
+            flash('Login Unsuccessful. Please check your email or password', 'danger')
     return render_template("login.html", title='Login', form=form)
 
 if __name__ == "__main__":
