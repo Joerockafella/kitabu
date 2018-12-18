@@ -9,7 +9,8 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import scoped_session, sessionmaker
 from forms import RegistrationForm, LoginForm
 from helpers import bcrypt, login_manager
-from flask_login import login_user
+from flask_login import login_user, current_user
+
 
 app = Flask(__name__)
 
@@ -37,6 +38,8 @@ def index():
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = RegistrationForm()
     if form.validate_on_submit():
         hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
@@ -52,12 +55,14 @@ def register():
 
 @app.route("/login", methods=['GET', 'POST'])
 def login():
+    if current_user.is_authenticated:
+        return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
         user = db.execute(
             "SELECT * FROM users WHERE email = :email",
             { "email": form.email.data }
-        ).fetchone()
+        ).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             return redirect(url_for('index'))
