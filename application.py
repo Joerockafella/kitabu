@@ -8,12 +8,13 @@ from sqlalchemy import create_engine
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy.orm import scoped_session, sessionmaker
 from forms import RegistrationForm, LoginForm
-from flask_bcrypt import Bcrypt
+from helpers import bcrypt, login_manager
+from flask_login import login_user
 
 app = Flask(__name__)
 
 app.config['SECRET_KEY'] = 'SECRET_KEY'
-bcrypt = Bcrypt(app)
+
 
 # Check for environment variable
 if not os.getenv("DATABASE_URL"):
@@ -53,8 +54,12 @@ def register():
 def login():
     form = LoginForm()
     if form.validate_on_submit():
-        if form.email.data == 'joe@mail.com' and form.password.data == 'testing':
-            flash('Hi {form.username.data}, you have been logged in successfly!', 'success')
+        user = db.execute(
+            "SELECT * FROM users WHERE email = :email",
+            { "email": form.email.data }
+        ).fetchone()
+        if user and bcrypt.check_password_hash(user.password, form.password.data):
+            login_user(user, remember=form.remember.data)
             return redirect(url_for('index'))
         else:
             flash('Login Unsuccessful. Please check your email or password', 'danger')
