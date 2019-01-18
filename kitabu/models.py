@@ -1,6 +1,8 @@
 from datetime import datetime
-from kitabu import db, login_manager
+from kitabu import db, login_manager, manager, migrate, migrate_command
 from flask_login import UserMixin
+
+manager.add_command('db', migrate_command)
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -13,11 +15,12 @@ class User(db.Model, UserMixin):
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(20), unique=True, nullable=False)
     email = db.Column(db.String(120), unique=True, nullable=False)
+    image_file = db.Column(db.String(20), nullable=False, default='default.jpg')
     password = db.Column(db.String(60), nullable=False)
     user_reviews = db.relationship('Review', backref='author', lazy=True)
 
     def __repr__(self):
-            return f"User('{self.username}', '{self.email}' )" #this is what will be printed
+            return f"User('{self.username}', '{self.email}', '{self.image_file}' )" #this is what will be printed
 
 class Review(db.Model):
     __tablename__ = "reviews"
