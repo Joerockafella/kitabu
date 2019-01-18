@@ -25,7 +25,6 @@ body {
   }
 
   .content-section {
-    
     padding: 10px 20px;
     border: 1px solid #dddddd;
     border-radius: 3px;
@@ -42,10 +41,19 @@ body {
   .navbar-img {
     height: 40px;
     width: 40px;
+    cursor: pointer;
   }
   
   .account-heading {
     font-size: 2.5rem;
+  }
+
+  .account-heading-drop {
+    font-size: 1.5rem;
+  }
+
+  .account-email-drop {
+    font-size: 0.7rem;
   }
   
   .dropdown {
@@ -54,12 +62,13 @@ body {
   }
 
   .dropdown-content {
-    display: none;
+    display: none; 
+    right: 0;
     position: absolute;
     background-color: #ffffff;
     min-width: 230px;
-    overflow: auto;
-    border: 1px solid #ddd;
+    border: 3px solid #f1f1f1;
+    box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
     z-index: 1;
   }
 
@@ -69,7 +78,12 @@ body {
     text-decoration: none;
     display: block;
   }
+
+  .logout-drop {
+    right: 0;
+    text-align: right;
+  }
   
-  .dropdown a:hover {background-color: #ddd;}
+  .dropdown a:hover {color: #ddd;}
   
   .show {display: block;}
