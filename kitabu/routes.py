@@ -10,8 +10,13 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/")
 @app.route("/home")
 def home():
-    books = Book.query.all()
-    return render_template("home.html", title='Home', books=books)
+    if current_user.is_authenticated:
+        books = Book.query.all()
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+        return render_template("home.html", title='Home', books=books, image_file=image_file)
+    else:
+        books = Book.query.all()
+        return render_template("home.html", title='Home', books=books)
 
 @app.route("/register", methods=['GET', 'POST'])
 def register():
@@ -62,7 +67,6 @@ def save_picture(form_picture):
     i.save(picture_path)
 
     return picture_fn
-
 
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
