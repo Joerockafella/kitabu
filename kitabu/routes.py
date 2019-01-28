@@ -1,9 +1,10 @@
-import os
+import os, decimal
 import secrets
+import requests
 from PIL import Image 
 from flask import session, render_template, request, redirect, url_for, Markup, flash
 from kitabu import app, db, bcrypt
-from kitabu.forms import RegistrationForm, LoginForm, UpdateAccountForm
+from kitabu.forms import RegistrationForm, LoginForm, UpdateAccountForm, SearchForm
 from kitabu.models import User, Review, Book
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -11,9 +12,10 @@ from flask_login import login_user, current_user, logout_user, login_required
 @app.route("/home")
 def home():
     if current_user.is_authenticated:
+        form = SearchForm()
         books = Book.query.all()
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        return render_template("home.html", title='Home', books=books, image_file=image_file)
+        return render_template("home.html", title='Home', books=books, image_file=image_file, form=form)
     else:
         books = Book.query.all()
         return render_template("home.html", title='Home', books=books)
@@ -41,8 +43,9 @@ def login():
         user = User.query.filter_by(email=form.email.data).first()
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
-            next_page = request.args.get('next')     
-            flash('Hey {user}. You are now successfully logged in', 'success')
+            next_page = request.args.get('next')  
+            #user_name = current_user.username   
+            flash('Hey {user_name}. You are now successfully logged in!', 'success')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
             flash('Login Unsuccessful. Please check your email or password', 'danger')
@@ -85,3 +88,35 @@ def account():
         form.email.data = current_user.email
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template("account.html", title='Account', image_file=image_file, form=form)
+
+@app.route("/books/<int:book_id>")
+@login_required
+def book(book_id):
+    """List details about a single Book."""
+    if current_user.is_authenticated:
+        # Making sure book exists.
+        book = Book.query.get(book_id)
+        goodreads = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "Pan0ciQ093frutnmdDvug", "isbns": book.isbn})
+        ratings = goodreads.json()["books"][0]["average_rating"]
+        rating_counts = goodreads.json()["books"][0]["work_ratings_count"]
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+        return render_template("book.html", title='Book detail', book=book, rating_counts=rating_counts, ratings=ratings, image_file=image_file)
+
+@app.route("/", methods=['GET', 'POST'])
+def search():
+    """ Search for books based on user-supplied criteria """
+    #form = SearchForm()
+    #search_query = request.form.get('title')
+    #search_key = request.form.get('search')
+    #(('%' + request.form.get("isbn") + '%').upper() 
+    #get_query = Book.query.get(isbn, )
+    #search_query = Book.query.filter_by(title=search_key).all()
+    #if search_query is None:
+        #flash('No books of that title found, Sorry!', 'danger')
+        #return redirect(url_for('home'))
+    
+    #return render_template('home.html', search_query=search_query, form=form)
+
+    
+
+

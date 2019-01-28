@@ -2,23 +2,31 @@
 
 {% block content %} 
     <div class="container">
-        <div class="jumbotron bg-white text-white text-center pt-4">
+        <div class="jumbotron bg-white text-white text-center pt-4 mb-0">
             <div class="m-auto">
                 <img src="{{ url_for('static', filename = 'images/_book.png') }}" width="100" height="85">
                 <h1 class="mb-4 mr-4 display-4">Kitabu Review</h1> 
             </div>
             <hr>    
             <p>This is a book review website. Register, then search for books, leave reviews, and see the reviews made by other people.</p>
+        {% if current_user.is_authenticated %}
             <div class="input-group mt-4">
-                <form class="form-inline m-auto" action="{{url_for('home')}}" method="POST">
-                <input type="text" class="form-control" name="search" placeholder="Title/ Author / ISBN">
-                    <div class="input-group-append">
-                        <button class="btn btn-secondary" type="submit">
-                        <i class="fa fa-search"></i>
-                        </button>
-                    </div>
+                <form class="form-inline mx-auto" action="" method="POST">
+                    {% if form.search.errors %}
+                    {{ form.search(class="form-control form-control is-invalid") }}
+                    {{ form.submit(class="btn btn-secondary") }}
+                        <div class="invalid-feeback">
+                            {% for error in form.search.errors%}
+                                <span>{{ error }}</span>
+                            {% endfor %}
+                        </div>
+                    {% else %}
+                        {{ form.search(class="form-control form-control", placeholder='Title/ Author / ISBN') }}    
+                        {{ form.submit(class="btn btn-secondary") }}
+                    {% endif %}
                 </form>
             </div>
+        {% endif %}
         </div>
         <div class='container h-25 p-3'> 
             <div class="row">
@@ -26,17 +34,14 @@
                     <div class="card-deck col-sm-4 mx-auto mb-4">
                         <div class="card bg-light shadow">
                             <div class="card-body">
-                                <p class="card-text text-danger">{{book.isbn}}</p>
-                                <hr>
                                 <h4 class="card-title text-info">{{book.title}}</h4>
-                                <p class="card-text text-info">{{book.author}}</p>
-                                <p class="card-text text-info">{{book.year}}</p>
-                                <a href="#" class="btn btn-danger">See more</a>  
+                                <p class="card-text text-info">by {{book.author}}, {{book.year}}</p>
+                                <a href="{{ url_for('book', book_id=book.id) }}" class="btn btn-danger">See more</a>  
                             </div>
                         </div>   
                     </div>
                 {% endfor %}
             </div>   
-        </div>            
+        </div>  
     </div>
 {% endblock content %}

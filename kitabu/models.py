@@ -1,5 +1,5 @@
 from datetime import datetime
-from kitabu import db, login_manager, manager, migrate, migrate_command
+from kitabu import db, login_manager, manager, migrate, migrate_command, app
 from flask_login import UserMixin
 
 manager.add_command('db', migrate_command)
@@ -44,5 +44,7 @@ class Book(db.Model):
     year = db.Column(db.Integer)
     book_reviews = db.relationship('Review', lazy=True)
 
+
     def __repr__(self):
-        return f"Book('{self.title}', '{self.date_posted}', '{self.rating}' )" 
+        return f"Book('{self.isbn}', '{self.title}', '{self.author}', '{self.year}' )" 
+

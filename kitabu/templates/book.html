@@ -1,0 +1,14 @@
+{% extends "layout.html" %}
+
+{% block content %}
+    <div class="content-section_2 p-3 mx-auto col-6">
+        <div class="text-center">
+            <h1 class="card-title text-info">{{ book.title }}</h1>
+            <p class="card-text text-info">Author: {{book.author}}</p>
+            <p class="card-text text-info">Year published: {{book.year}}</p> 
+            <p class="card-text text-info">ISBN: {{ book.isbn }}</p>  
+            <p class="card-text text-info">Goodreads ratings: <button class=" btn btn-light p-0 pl-1 pr-1 text-info"><small>{{ ratings }} out of 5 <span class="fa fa-star checked"></span></small></button> <small>{{ rating_counts }}</small></p>
+            <hr>
+        </div>
+    </div>   
+{% endblock content %}
