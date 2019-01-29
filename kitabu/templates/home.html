@@ -9,7 +9,7 @@
             </div>
             <hr>    
             <p>This is a book review website. Register, then search for books, leave reviews, and see the reviews made by other people.</p>
-        {% if current_user.is_authenticated %}
+            {% if current_user.is_authenticated %}
             <div class="input-group mt-4">
                 <form class="form-inline mx-auto" action="" method="POST">
                     {% if form.search.errors %}

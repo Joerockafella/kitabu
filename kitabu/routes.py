@@ -105,17 +105,24 @@ def book(book_id):
 @app.route("/", methods=['GET', 'POST'])
 def search():
     """ Search for books based on user-supplied criteria """
-    #form = SearchForm()
-    #search_query = request.form.get('title')
-    #search_key = request.form.get('search')
+    form = SearchForm()
+    search_key = request.form.get('search')
+
     #(('%' + request.form.get("isbn") + '%').upper() 
-    #get_query = Book.query.get(isbn, )
+
     #search_query = Book.query.filter_by(title=search_key).all()
-    #if search_query is None:
-        #flash('No books of that title found, Sorry!', 'danger')
-        #return redirect(url_for('home'))
-    
-    #return render_template('home.html', search_query=search_query, form=form)
+
+    #search_query = Book.query
+    #search_key = search_query.filter(Book.title.like('%' + form.search.data + '%'))
+    #books = search_key.order_by(Book.title).all()
+
+    book_query = Book.query
+    books = book_query.filter(Book.title == search_key).all()
+    if search_key is None:
+        flash('No books of that title found, Sorry!', 'danger')
+        return redirect(url_for('home'))
+    image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    return render_template('home.html', books=books, image_file=image_file, form=form)
 
     
 
