@@ -12,6 +12,7 @@
             {% if current_user.is_authenticated %}
             <div class="input-group mt-4">
                 <form class="form-inline mx-auto" action="" method="POST">
+                    {{ form.hidden_tag() }}
                     {% if form.search.errors %}
                     {{ form.search(class="form-control form-control is-invalid") }}
                     {{ form.submit(class="btn btn-secondary") }}

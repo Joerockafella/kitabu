@@ -46,5 +46,5 @@ class Book(db.Model):
 
 
     def __repr__(self):
-        return f"Book('{self.isbn}', '{self.title}', '{self.author}', '{self.year}' )" 
+        return f"Book('{self.isbn}', '{self.title}', '{self.author}', '{self.year}', '{self.book_reviews}' )" 
 

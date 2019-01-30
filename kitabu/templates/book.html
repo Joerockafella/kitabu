@@ -7,8 +7,70 @@
             <p class="card-text text-info">Author: {{book.author}}</p>
             <p class="card-text text-info">Year published: {{book.year}}</p> 
             <p class="card-text text-info">ISBN: {{ book.isbn }}</p>  
-            <p class="card-text text-info">Goodreads ratings: <button class=" btn btn-light p-0 pl-1 pr-1 text-info"><small>{{ ratings }} out of 5 <span class="fa fa-star checked"></span></small></button> <small>{{ rating_counts }}</small></p>
             <hr>
+        </div>
+        <h4 class="text-info mb-4">Ratings and Reviews</h4>
+        <p class="card-text text-info">Goodreads ratings: 
+            <small>Average: </small>
+            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                <small>
+                    {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
+                </small>
+            </button> 
+            <small>Total: </small> 
+            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                <small>{{ g_rating_counts }}</small>
+            </button>
+        </p>
+        <p class="card-text text-info">Kitabu ratings: 
+            <small>Average: </small>
+            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                <small>
+                    {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
+                </small>
+            </button> 
+            <small>Total: </small> 
+            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                <small>{{ g_rating_counts }}</small>
+            </button>
+        </p>
+        <p class="card-text text-info">Kitabu Reviews: 
+            <small>Total: </small> 
+            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                <small>{{ g_rating_counts }}</small>
+            </button>
+        </p>
+        <div class="d-flex p-3">
+            <div class="dropdown p-2 mr-4">
+                <button class="btn btn-info dropdown-toggle p-0 pl-2 pr-1" data-toggle="dropdown">
+                   Rate this book
+                </button>
+                <div class="dropdown-menu">
+                    <button type="submit" value="1" class="dropdown-item"><span class="fa fa-star checked"></span> 1- Sucks</button>
+                    <button type="submit" value="2" class="dropdown-item"><span class="fa fa-star checked"></span> 2 - Medium</button>
+                    <button type="submit" value="3" class="dropdown-item"><span class="fa fa-star checked"></span> 3 - Ok</button>
+                    <button type="submit" value="4" class="dropdown-item"><span class="fa fa-star checked"></span> 4 - Good</button>
+                    <button type="submit" value="5" class="dropdown-item"><span class="fa fa-star checked"></span> 5 - Awesome</button>
+                </div>
+            </div>
+            <div class="p-2">
+                <a href="{{ url_for('new_review', book_id=book.id) }}" class="text-info font-weight-bold">Write a review</a>
+            </div>
+        </div> 
+        <div class="mt-4">
+            {% for review in reviews %}
+            <article class="media content-section">
+                <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + review.author.image_file) }}">
+                <div class="media-body">
+                <div class="article-metadata">
+                    <a class="mr-2 text-info" href="{{ url_for('account') }}">{{ review.author.username }}</a>
+                    <small class="text-muted">{{ review.date_posted.strftime('%Y-%m-%d') }}</small>
+                </div>
+                <h5><a class="article-title text-info" href="{{ url_for('account') }}">{{ review.title }}</a></h5>
+                <p class="article-content">{{ review.content }}</p>
+                </div>
+            </article>
+            {% endfor %}
         </div>
     </div>   
 {% endblock content %}

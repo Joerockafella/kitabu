@@ -2,9 +2,10 @@ import os, decimal
 import secrets
 import requests
 from PIL import Image 
+from sqlalchemy import or_
 from flask import session, render_template, request, redirect, url_for, Markup, flash
 from kitabu import app, db, bcrypt
-from kitabu.forms import RegistrationForm, LoginForm, UpdateAccountForm, SearchForm
+from kitabu.forms import RegistrationForm, LoginForm, UpdateAccountForm, SearchForm, ReviewForm
 from kitabu.models import User, Review, Book
 from flask_login import login_user, current_user, logout_user, login_required
 
@@ -51,11 +52,31 @@ def login():
             flash('Login Unsuccessful. Please check your email or password', 'danger')
     return render_template("login.html", title='Login', form=form)
 
+#to update
+@app.route("/", methods=['POST'])
+@login_required
+def search():
+    """ Search for books based on user-supplied criteria """
+    form = SearchForm()
+    if form.validate_on_submit():
+        search_key = request.form.get('search')
+        book_query = Book.query
+        search_query = book_query.filter(
+            or_(
+            Book.title.like(search_key),
+            Book.author.like(search_key),
+            Book.isbn.like(search_key)
+            )
+        ).all()
 
-@app.route("/logout")
-def logout():
-    logout_user()
-    return redirect(url_for('home'))
+        books = search_query
+
+        if not books:
+            flash('Could not found that book, Sorry!', 'danger')
+            return redirect(url_for('home'))
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+        return render_template('home.html', books=books, image_file=image_file, form=form)
+
 
 def save_picture(form_picture):
     random_hex = secrets.token_hex(8)
@@ -69,6 +90,7 @@ def save_picture(form_picture):
     i.save(picture_path)
 
     return picture_fn
+
 
 @app.route("/account", methods=['GET', 'POST'])
 @login_required
@@ -89,6 +111,7 @@ def account():
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template("account.html", title='Account', image_file=image_file, form=form)
 
+
 @app.route("/books/<int:book_id>")
 @login_required
 def book(book_id):
@@ -96,34 +119,42 @@ def book(book_id):
     if current_user.is_authenticated:
         # Making sure book exists.
         book = Book.query.get(book_id)
+        reviews = Review.query.filter(Book.book_reviews).all()
         goodreads = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "Pan0ciQ093frutnmdDvug", "isbns": book.isbn})
-        ratings = goodreads.json()["books"][0]["average_rating"]
-        rating_counts = goodreads.json()["books"][0]["work_ratings_count"]
+        g_ratings = goodreads.json()["books"][0]["average_rating"]
+        g_rating_counts = goodreads.json()["books"][0]["work_ratings_count"]
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        return render_template("book.html", title='Book detail', book=book, rating_counts=rating_counts, ratings=ratings, image_file=image_file)
+        return render_template("book.html", title='Book detail', book=book, reviews=reviews, g_rating_counts=g_rating_counts, g_ratings=g_ratings, image_file=image_file)
 
-@app.route("/", methods=['GET', 'POST'])
-def search():
-    """ Search for books based on user-supplied criteria """
-    form = SearchForm()
-    search_key = request.form.get('search')
+#@app.route("/books/<int:book_id>/reviews/<string:book_reviews>")
+#@login_required
+#def review(book_reviews):
+    #review_query = Book.query
+    #book_reviews = review_query.filter_by(book_reviews=Book.book_reviews).all()
+    #reviews = book_reviews
+    #image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+    #return render_template("book.html", title='Book detail', reviews=reviews, image_file=image_file)
 
-    #(('%' + request.form.get("isbn") + '%').upper() 
 
-    #search_query = Book.query.filter_by(title=search_key).all()
-
-    #search_query = Book.query
-    #search_key = search_query.filter(Book.title.like('%' + form.search.data + '%'))
-    #books = search_key.order_by(Book.title).all()
-
-    book_query = Book.query
-    books = book_query.filter(Book.title == search_key).all()
-    if search_key is None:
-        flash('No books of that title found, Sorry!', 'danger')
-        return redirect(url_for('home'))
+@app.route("/books/<int:book_id>/reviews/new", methods=['GET', 'POST'])
+@login_required
+def new_review(book_id):
+    """View and post reviews"""
+    form = ReviewForm()
+    if form.validate_on_submit():
+        book = Book.query.get(book_id)
+        review = Review(title=form.title.data, content=form.content.data, author=current_user, book_id=book_id)
+        db.session.add(review)
+        db.session.commit()
+        flash('Your review has been submited!', 'success')
+        return redirect(url_for('book', book_id=book.id))
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    return render_template('home.html', books=books, image_file=image_file, form=form)
+    return render_template("create_review.html", title='New Review', image_file=image_file, form=form)
 
-    
 
+
+@app.route("/logout")
+def logout():
+    logout_user()
+    return redirect(url_for('home'))
 

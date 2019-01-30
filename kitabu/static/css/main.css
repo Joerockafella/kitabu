@@ -47,6 +47,38 @@ body {
     margin-right: 20px;
     margin-bottom: 16px;
   }
+  
+  a.article-title:hover {
+    color: #333;
+    text-decoration: none;
+  }
+
+  .article-img {
+    height: 55px;
+    width: 55px;
+    margin-right: 20px;
+    margin-bottom: 16px;
+  }
+
+  .article-content {
+    white-space: pre-line;
+  }
+  .article-metadata {
+    padding-bottom: 1px;
+    margin-bottom: 4px;
+    border-bottom: 1px solid #e3e3e3
+  }
+  
+  .article-metadata a:hover {
+    color: #333;
+    text-decoration: none;
+  }
+  
+  .article-svg {
+    width: 25px;
+    height: 25px;
+    vertical-align: middle;
+  }  
 
   .navbar-img {
     height: 40px;
@@ -66,10 +98,15 @@ body {
     font-size: 0.7rem;
   }
   
-  .dropdown {
+  .img_dropdown {
     position: relative;
     display: inline-block;
   }
+
+  .dropdown {
+    display: inline-block;
+  }
+  
 
   .dropdown-content {
     display: none; 
@@ -94,6 +131,6 @@ body {
     text-align: right;
   }
   
-  .dropdown a:hover {color: #ddd;}
+  .img_dropdown a:hover {color: #ddd;}
   
   .show {display: block;}
