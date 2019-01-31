@@ -119,21 +119,14 @@ def book(book_id):
     if current_user.is_authenticated:
         # Making sure book exists.
         book = Book.query.get(book_id)
-        reviews = Review.query.filter(Book.book_reviews).all()
+        reviews = Review.query.filter(
+            Review.book_id.like(book_id)
+            ).all()
         goodreads = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "Pan0ciQ093frutnmdDvug", "isbns": book.isbn})
         g_ratings = goodreads.json()["books"][0]["average_rating"]
         g_rating_counts = goodreads.json()["books"][0]["work_ratings_count"]
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         return render_template("book.html", title='Book detail', book=book, reviews=reviews, g_rating_counts=g_rating_counts, g_ratings=g_ratings, image_file=image_file)
-
-#@app.route("/books/<int:book_id>/reviews/<string:book_reviews>")
-#@login_required
-#def review(book_reviews):
-    #review_query = Book.query
-    #book_reviews = review_query.filter_by(book_reviews=Book.book_reviews).all()
-    #reviews = book_reviews
-    #image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    #return render_template("book.html", title='Book detail', reviews=reviews, image_file=image_file)
 
 
 @app.route("/books/<int:book_id>/reviews/new", methods=['GET', 'POST'])
@@ -151,7 +144,8 @@ def new_review(book_id):
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
     return render_template("create_review.html", title='New Review', image_file=image_file, form=form)
 
-
+#@app.route("/books/<int:book_id>/reviews/<int:review_id>")
+#def update_review(book_id):
 
 @app.route("/logout")
 def logout():

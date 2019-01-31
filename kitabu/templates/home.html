@@ -5,10 +5,10 @@
         <div class="jumbotron bg-white text-white text-center pt-4 mb-0">
             <div class="m-auto">
                 <img src="{{ url_for('static', filename = 'images/_book.png') }}" width="100" height="85">
-                <h1 class="mb-4 mr-4 display-4">Kitabu Review</h1> 
+                <h1 class="mb-4 mr-4 display-4 font-weight-bold text-secondary">Kitabu Review</h1> 
             </div>
             <hr>    
-            <p>This is a book review website. Register, then search for books, leave reviews, and see the reviews made by other people.</p>
+            <p class="text-info">This is a book review website. Register, then search for books, leave reviews, and see the reviews made by other people.</p>
             {% if current_user.is_authenticated %}
             <div class="input-group mt-4">
                 <form class="form-inline mx-auto" action="" method="POST">
