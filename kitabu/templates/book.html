@@ -2,71 +2,108 @@
 
 {% block content %}
     <div class="content-section_2 p-3 mx-auto col-6">
-        <div class="text-center">
-            <h1 class="card-title text-info">{{ book.title }}</h1>
-            <p class="card-text text-info">Author: {{book.author}}</p>
-            <p class="card-text text-info">Year published: {{book.year}}</p> 
-            <p class="card-text text-info">ISBN: {{ book.isbn }}</p>  
-            <hr>
+        <div>
+            <h1 class="card-title text-info text-center">{{ book.title }}</h1>
         </div>
-        <h4 class="text-info mb-4">Ratings and Reviews</h4>
-        <p class="card-text text-info">Goodreads ratings: 
-            <small>Average: </small>
-            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                <small>
-                    {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
-                </small>
-            </button> 
-            <small>Total: </small> 
-            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                <small>{{ g_rating_counts }}</small>
-            </button>
-        </p>
-        <p class="card-text text-info">Kitabu ratings: 
-            <small>Average: </small>
-            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                <small>
-                    {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
-                </small>
-            </button> 
-            <small>Total: </small> 
-            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                <small>{{ g_rating_counts }}</small>
-            </button>
-        </p>
-        <p class="card-text text-info">Kitabu Reviews: 
-            <small>Total: </small> 
-            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                <small>{{ g_rating_counts }}</small>
-            </button>
-        </p>
-        <div class="d-flex p-3">
-            <div class="dropdown p-2 mr-4">
-                <button class="btn btn-info dropdown-toggle p-0 pl-2 pr-1" data-toggle="dropdown">
-                   Rate this book
-                </button>
-                <div class="dropdown-menu">
-                    <button type="submit" value="1" class="dropdown-item"><span class="fa fa-star checked"></span> 1- Sucks</button>
-                    <button type="submit" value="2" class="dropdown-item"><span class="fa fa-star checked"></span> 2 - Medium</button>
-                    <button type="submit" value="3" class="dropdown-item"><span class="fa fa-star checked"></span> 3 - Ok</button>
-                    <button type="submit" value="4" class="dropdown-item"><span class="fa fa-star checked"></span> 4 - Good</button>
-                    <button type="submit" value="5" class="dropdown-item"><span class="fa fa-star checked"></span> 5 - Awesome</button>
+        <div>
+            <div class="col">
+                <div class="card">
+                    <div class="card-header text-center p-1"><h4 class="text-info">Ratings and Reviews</h4></div>
+                    <div class="card-body d-flex p-3">
+                        <div>
+                            <img class="img-thumbnail mr-4" src="http://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="Book image">
+                            <p class="card-text text-info m-0"><small>Author: {{book.author}}</small></p>
+                            <p class="card-text text-info m-0"><small>Year published: {{book.year}}</small></p> 
+                            <p class="card-text text-info m-0"><small>ISBN: {{ book.isbn }}</small></p>  
+                        </div>
+                        <div class="ml-4">
+                            <p class="card-text text-info">Goodreads ratings: 
+                            <small>Average: </small>
+                            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                                <small>
+                                    {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
+                                </small>
+                            </button> 
+                            <small>Total: </small> 
+                            <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                                <small>{{ g_rating_counts }}</small>
+                            </button>
+                            </p>
+                            <p class="card-text text-info">Kitabu ratings: 
+                                <small>Average: </small>
+                                <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                                    <small>
+                                        {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
+                                    </small>
+                                </button> 
+                                <small>Total: </small> 
+                                <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                                    <small>{{ g_rating_counts }}</small>
+                                </button>
+                            </p>
+                            <p class="card-text text-info mb-0">Kitabu Reviews: 
+                                <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
+                                    <small>{{ g_rating_counts }}</small>
+                                </button>
+                            </p>
+                            <form action="{{ url_for('book', book_id=book.id) }}"  method="POST">
+                                <div class="row">
+                                    <div class="rating">
+                                        <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="Excellent">5 stars</label>
+                                        <input type="radio" id="star4" name="rating" value="4" /><label for="star4" title="Great">4 stars</label>
+                                        <input type="radio" id="star3" name="rating" value="3" /><label for="star3" title="Good">3 stars</label>
+                                        <input type="radio" id="star2" name="rating" value="2" /><label for="star2" title="Kinda not bad">2 stars</label>
+                                        <input type="radio" id="star1" name="rating" value="1" checked="checked"/><label for="star1" title="Sucks big time">1 star</label>
+                                    </div>
+                                </div>
+                                {{ form.hidden_tag() }}
+                                <fieldset class="form-group">
+                                    <div class="form-group">
+                                        {% if form.title.errors %}
+                                        {{ form.title(class="form-control form-control is-invalid") }}
+                                        <div class="invalid-feeback">
+                                            {% for error in form.title.errors%}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.title(class="form-control form-control", placeholder='Title...') }}    
+                                    {% endif %}
+                                    </div>
+                                    <div class="form-group">
+                                        {% if form.content.errors %}
+                                        {{ form.content(class="form-control form-control is-invalid") }}
+                                        <div class="invalid-feeback">
+                                            {% for error in form.content.errors%}
+                                                <span>{{ error }}</span>
+                                            {% endfor %}
+                                        </div>
+                                    {% else %}
+                                        {{ form.content(class="form-control form-control", placeholder='Comment...') }}    
+                                    {% endif %}
+                                    </div>
+                                </fieldset>
+                                <div class="form-group">
+                                    {{ form.submit(class="btn btn-secondary") }}
+                                </div>     
+                            </form>
+                        </div>
+                    </div>
                 </div>
             </div>
-            <div class="p-2">
-                <a href="{{ url_for('new_review', book_id=book.id) }}" class="text-info font-weight-bold">Write a review</a>
-            </div>
-        </div> 
+        </div>
+        <hr>
         <div class="mt-4">
             {% for review in reviews %}
             <article class="media content-section">
                 <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + review.author.image_file) }}">
                 <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2 text-info" href="{{ url_for('account') }}">{{ review.author.username }}</a>
+                    <a class="mr-2 text-info" href="#">{{ review.author.username }}</a>
                     <small class="text-muted">{{ review.date_posted.strftime('%Y-%m-%d') }}</small>
+                    <small class="text-muted float-right">{{ review.rating }} / 5 <span class="fa fa-star checked"></span></small>
                 </div>
-                <h5><a class="article-title text-info" href="{{ url_for('account') }}">{{ review.title }}</a></h5>
+                <h5><a class="article-title text-info" href="{{ url_for('review', book_id=book.id, review_id=review.id) }}">{{ review.title }}</a></h5>
                 <p class="article-content">{{ review.content }}</p>
                 </div>
             </article>

@@ -29,20 +29,19 @@
             </div>
         {% endif %}
         </div>
-        <div class='container h-25 p-3'> 
-            <div class="row">
+        
+            <div class="row mx-auto">
                 {% for book in books %}
-                    <div class="card-deck col-sm-4 mx-auto mb-4">
-                        <div class="card bg-light shadow">
-                            <div class="card-body">
-                                <h4 class="card-title text-info">{{book.title}}</h4>
-                                <p class="card-text text-info">by {{book.author}}, {{book.year}}</p>
-                                <a href="{{ url_for('book', book_id=book.id) }}" class="btn btn-danger">See more</a>  
-                            </div>
-                        </div>   
+                <div class="d-flex flex-wrap mx-auto ">
+                    <div class="p-2 m-2 img-thumbnail">
+                        <a href="{{ url_for('book', book_id=book.id) }}">
+                            <img src="http://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="Book image" class="card_img">
+                        </a>
+                        <h6 class="text-info mt-2">{{book.title}}</h6>
+                        <small><p class="text-info mb-0">by {{book.author}}, {{book.year}}</p></small>
                     </div>
+                </div>
                 {% endfor %}
-            </div>   
-        </div>  
+            </div>     
     </div>
 {% endblock content %}

@@ -20,7 +20,7 @@ class User(db.Model, UserMixin):
     user_reviews = db.relationship('Review', backref='author', lazy=True)
 
     def __repr__(self):
-            return f"User('{self.username}', '{self.email}', '{self.image_file}' )" #this is what will be printed
+            return f"User('{self.username}', '{self.email}', '{self.image_file}', '{self.user_reviews}' )" #this is what will be printed
 
 class Review(db.Model):
     __tablename__ = "reviews"
@@ -33,7 +33,7 @@ class Review(db.Model):
     book_id = db.Column(db.Integer, db.ForeignKey('books.id'), nullable=False)
 
     def __repr__(self):
-            return f"Review('{self.title}', '{self.date_posted}', '{self.rating}' )" 
+            return f"Review('{self.title}', '{self.date_posted}', '{self.rating}', '{self.user_id}', '{self.book_id}')" 
 
 class Book(db.Model):
     __tablename__ = "books"
