@@ -1,3 +1,5 @@
+
+
 /* When the user clicks on the image, 
 toggle between hiding and showing the dropdown content */
 function myFunction() {
@@ -17,4 +19,5 @@ window.onclick = function(event) {
     }
   }
 }
+
 

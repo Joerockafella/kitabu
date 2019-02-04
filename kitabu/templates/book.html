@@ -33,17 +33,17 @@
                                 <small>Average: </small>
                                 <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
                                     <small>
-                                        {{ g_ratings }} / 5 <span class="fa fa-star checked"></span> 
+                                        {{ rating_count }} / 5 <span class="fa fa-star checked"></span> 
                                     </small>
                                 </button> 
                                 <small>Total: </small> 
                                 <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                                    <small>{{ g_rating_counts }}</small>
+                                    <small>{{ rating_count }}</small>
                                 </button>
                             </p>
                             <p class="card-text text-info mb-0">Kitabu Reviews: 
                                 <button class=" btn btn-light p-0 pl-1 pr-1 text-info">
-                                    <small>{{ g_rating_counts }}</small>
+                                    <small>{{ review_count }}</small>
                                 </button>
                             </p>
                             <form action="{{ url_for('book', book_id=book.id) }}"  method="POST">
@@ -99,7 +99,7 @@
                 <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + review.author.image_file) }}">
                 <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2 text-info" href="#">{{ review.author.username }}</a>
+                    <a class="mr-2 text-info" href="{{ url_for('user_reviews', book_id=book.id, username=review.author.username) }}">{{ review.author.username }}</a>
                     <small class="text-muted">{{ review.date_posted.strftime('%Y-%m-%d') }}</small>
                     <small class="text-muted float-right">{{ review.rating }} / 5 <span class="fa fa-star checked"></span></small>
                 </div>

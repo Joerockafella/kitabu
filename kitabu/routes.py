@@ -4,22 +4,24 @@ import requests
 from PIL import Image 
 from sqlalchemy import or_, and_
 from flask import session, render_template, request, redirect, url_for, Markup, flash, abort, jsonify
-from kitabu import app, db, bcrypt
-from kitabu.forms import RegistrationForm, LoginForm, UpdateAccountForm, SearchForm, ReviewForm
+from kitabu import app, db, bcrypt, mail
+from kitabu.forms import RegistrationForm, LoginForm, UpdateAccountForm, SearchForm, ReviewForm, RequestResetForm, ResetPasswordForm
 from kitabu.models import User, Review, Book
 from flask_login import login_user, current_user, logout_user, login_required
-
+from flask_mail import Message
 
 @app.route("/")
 @app.route("/home")
 def home():
     if current_user.is_authenticated:
         form = SearchForm()
-        books = Book.query.all()
+        page = request.args.get('page', 1, type=int)
+        books = Book.query.paginate(page=page, per_page=16)
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         return render_template("home.html", title='Home', books=books, image_file=image_file, form=form)
     else:
-        books = Book.query.all()
+        page = request.args.get('page', 1, type=int)
+        books = Book.query.paginate(page=page, per_page=16)
         return render_template("home.html", title='Home', books=books)
 
 @app.route("/register", methods=['GET', 'POST'])
@@ -69,9 +71,7 @@ def search():
             Book.isbn.like(search_key)
             )
         ).all()
-
         books = search_query
-
         if not books:
             flash('Could not found that book, Sorry!', 'danger')
             return redirect(url_for('home'))
@@ -118,12 +118,20 @@ def account():
 def book(book_id):
     """List details about a single Book."""
     if current_user.is_authenticated:
-        # Making sure book exists.
         form = ReviewForm()
         book = Book.query.get(book_id)
         reviews = Review.query.filter(
             Review.book_id.like(book_id)
-            ).all()
+            ).order_by(Review.date_posted.desc()).all()
+        review_count = Review.query.filter(
+            Review.book_id.like(book_id)
+            ).count()
+#TODO: still need to update rate_count and average
+        rating_count_query = Review.query.filter_by(rating=Review.rating)\
+            .filter(
+            Review.book_id.like(book_id)
+            )
+        rating_count = rating_count_query.count()
         rating = request.form.get("rating")
         if form.validate_on_submit():
             review = Review(title=form.title.data, content=form.content.data, author=current_user, book_id=book_id, rating=rating)
@@ -136,7 +144,27 @@ def book(book_id):
         g_ratings = goodreads.json()["books"][0]["average_rating"]
         g_rating_counts = goodreads.json()["books"][0]["work_ratings_count"]
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        return render_template("book.html", title='Book detail', book=book, reviews=reviews, g_rating_counts=g_rating_counts, g_ratings=g_ratings, image_file=image_file, form=form)
+        return render_template("book.html", title='Book detail', book=book,  rating_count=rating_count, reviews=reviews, review_count=review_count, g_rating_counts=g_rating_counts, g_ratings=g_ratings, image_file=image_file, form=form)
+
+@app.route("/books/<int:book_id>/users/<string:username>")
+@login_required
+def user_reviews(username, book_id):
+    if current_user.is_authenticated:
+        form = SearchForm()
+        book = Book.query.get(book_id)
+        user = User.query.filter_by(username=username).first_or_404()
+        reviews = Review.query.filter_by(author=user)\
+            .filter(
+            Review.book_id.like(book_id)
+            ).order_by(Review.date_posted.desc()).all()
+        
+        user_reviews_count = Review.query.filter_by(author=user)\
+            .filter(
+            Review.book_id.like(book_id)
+            ).order_by(Review.date_posted.desc()).count()
+        
+        image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+        return render_template("user_reviews.html", reviews=reviews, user=user, book=book, user_reviews_count=user_reviews_count, image_file=image_file, form=form)
 
 
 @app.route("/books/<int:book_id>/reviews/<int:review_id>")
@@ -182,22 +210,57 @@ def delete_review(book_id, review_id):
     flash('Your review has been deleted!', 'success')
     return redirect(url_for('book', book_id=book.id))
 
-@app.route("/api/<string:isbn>")
+
+def send_reset_email(user):
+    token = user.get_reset_token()
+    msg = Message('Password Reset Request', sender='no-reply@demo.com', recipients=[user.email])
+
+    msg.body = f'''To reset your password, visit the following link:
+{url_for('reset_token', token=token, _external=True)}
+    
+If you did not make this request then simply ignore this email and no changes will be made.
+    '''
+
+@app.route("/reset_password", methods=['GET', 'POST'])
+def reset_request():
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    form = RequestResetForm()
+    if form.validate_on_submit():
+        user = User.query.filter_by(email=form.email.data).first()
+        send_reset_email(user)
+        flash('An email has been sent with instructions to reset your password.', 'info')
+        return redirect(url_for('login'))
+    return render_template('reset_request.html', title='Reset Password', form=form)
+
+@app.route("/reset_password/<token>", methods=['GET', 'POST'])
+def reset_token(token):
+    if current_user.is_authenticated:
+        return redirect(url_for('home'))
+    user = User.verify_reset_token(token)
+    if user is None:
+        flash('This is an invalid or expired token', 'danger')
+        return redirect(url_for('reset_request'))
+    form = ResetPasswordForm()
+    if form.validate_on_submit():
+        hashed_password = bcrypt.generate_password_hash(form.password.data).decode('utf-8')
+        user.password = hashed_password
+        db.session.commit() 
+        flash(f'Your password has been updated! You are now able to login.', 'success')
+        return redirect(url_for('login'))
+    return render_template('reset_token.html', title='Reset Password', form=form)
+
+@app.route("/api/<string:isbn>", methods=["GET"])
 def api(isbn):
     book_isbn = Book.query.get(isbn)
     book = Book.query.filter(
             Book.isbn.like(isbn)
             ).first()
-    #book = db.execute("SELECT * FROM books WHERE isbn = :q", {"q": isbn}).fetchone()
     
     if book is None:
         return jsonify({"error": "Invalid ISBN"}), 404
 
-    reviews = Review.query.filter(
-            Review.isbn.like(isbn)
-            ).all()
-    #reviews = db.execute("SELECT * FROM reviews WHERE book_id = :q1", {"q1": isbn}).fetchall()
-    response = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "Pan0ciQ093frutnmdDvug", "isbns": isbn})
+    response = requests.get("https://www.goodreads.com/book/review_counts.json", params={"key": "Pan0ciQ093frutnmdDvug", "isbns": book.isbn})
     data = response.json()['books'][0]
     
     return jsonify({
@@ -207,7 +270,6 @@ def api(isbn):
         "review_count": data['reviews_count'],
         "average_rating": data['average_rating']
     })
-
 
 
 @app.route("/logout")

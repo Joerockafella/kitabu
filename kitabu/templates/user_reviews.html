@@ -1,6 +1,8 @@
 {% extends "layout.html" %}
 
 {% block content %}
+<h3 class="mb-3 text-center">{{ user.username }} has {{ user_reviews_count }} review(s) for this book</h3>
+{% for review in reviews %}
     <div class="content p-3 mx-auto col-6">
         <article class="media content-section">
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + review.author.image_file) }}">
@@ -43,4 +45,5 @@
             </div>
         </div>
     </div>
+    {% endfor %}
 {% endblock content %}
