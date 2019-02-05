@@ -28,5 +28,5 @@ app.config['MAIL_USE_TLS'] = True
 app.config['MAIL_USERNAME'] = os.environ.get('E_USER')
 app.config['MAIL_PASSWORD'] = os.environ.get('E_PASS')
 mail = Mail(app)
-
+ 
 from kitabu import routes
