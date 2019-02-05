@@ -48,7 +48,8 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')  
-            #user_name = current_user.username   
+            #user_name = user.username  
+            #user_name = User.query.filter_by(username=User.username).first() 
             flash('Hey {user_name}. You are now successfully logged in!', 'success')
             return redirect(next_page) if next_page else redirect(url_for('home'))
         else:
@@ -213,13 +214,14 @@ def delete_review(book_id, review_id):
 
 def send_reset_email(user):
     token = user.get_reset_token()
-    msg = Message('Password Reset Request', sender='no-reply@demo.com', recipients=[user.email])
-    msg.body = f'''To reset your password, visit the following link:
+    msg = Message('Password Reset Request', sender='noreply@demo.com', recipients=[user.email])
+    msg.body = f'''This link will expire in 30 minutes!. To reset your password, visit the following link:
 {url_for('reset_token', token=token, _external=True)}
     
 If you did not not make this request then simply ignore this email and no changes will be made.'''
     mail.send(msg)
-    return "Sent"
+    
+
 @app.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
     if current_user.is_authenticated:
@@ -248,6 +250,7 @@ def reset_token(token):
         flash(f'Your password has been updated! You are now able to login.', 'success')
         return redirect(url_for('login'))
     return render_template('reset_token.html', title='Reset Password', form=form)
+
 
 @app.route("/api/<string:isbn>", methods=["GET"])
 def api(isbn):
