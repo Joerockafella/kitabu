@@ -5,16 +5,16 @@
         <div class="media">
             <img  class="rounded-circle account-img" src="{{ image_file }}" alt="image">
             <div class="media-body">
-                <h2 class="account-heading">{{ current_user.username }}</h2>
-                <p class="text-secondary">{{ current_user.email }}</p>
+                <h2 class="account-heading text-info">{{ current_user.username }}</h2>
+                <p class="text-secondary text-info">{{ current_user.email }}</p>
             </div>
         </div>
         <form action="" method="POST" enctype="multipart/form-data">
             {{ form.hidden_tag() }}
             <fieldset class="form-group">
-                <legend class="border-bottom mb-4">Edit Profile</legend>
+                <legend class="border-bottom mb-4 text-info">Edit Profile</legend>
                 <div class="form-group">
-                    {{ form.username.label(class="form-control-label") }}
+                    {{ form.username.label(class="form-control-label text-info") }}
                     {% if form.username.errors %}
                         {{ form.username(class="form-control form-control is-invalid") }}
                         <div class="invalid-feeback">
@@ -27,7 +27,7 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.email.label(class="form-control-label") }}
+                    {{ form.email.label(class="form-control-label text-info") }}
                     {% if form.email.errors %}
                         {{ form.email(class="form-control form-control is-invalid") }}
                         <div class="invalid-feeback">
@@ -40,7 +40,7 @@
                     {% endif %}
                 </div>
                 <div class="form-group">
-                    {{ form.picture.label() }}
+                    {{ form.picture.label(class="text-info") }}
                     {{ form.picture(class="form-control-file") }}
                     {% if form.picture.errors %}
                         {% for error in form.picture.errors%}

@@ -31,7 +31,7 @@
                 </button>
                 <div class="collapse navbar-collapse" id="navbarToggle">
                   <div class="navbar-nav mr-auto">
-                    <a class="nav-item nav-link p-0" href="{{ url_for('home') }}"><i class="fa fa-home m-0 p-0" style="font-size:34px;"></i></a>
+                    <a class="nav-item nav-link p-0" href="{{ url_for('main.home') }}"><i class="fa fa-home m-0 p-0" style="font-size:34px;"></i></a>
                   </div>
                   <!-- Navbar Right Side -->
                   <div class="navbar-nav">
@@ -46,13 +46,13 @@
                                       <p class="account-email-drop">{{ current_user.email }}</p>
                                   </div>
                               </div>
-                              <a href="{{ url_for('account') }}">Manage Account</a>
-                              <a class="logout-drop" href="{{ url_for('logout') }}">Logout</a>
+                              <a href="{{ url_for('users.account') }}">Manage Account</a>
+                              <a class="logout-drop" href="{{ url_for('users.logout') }}">Logout</a>
                             </div>
                           </div>
                      {% else %}
-                        <a class="nav-item nav-link" href="{{ url_for('login') }}">Login</a>
-                        <a class="nav-item nav-link" href="{{ url_for('register') }}">Register</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.login') }}">Login</a>
+                        <a class="nav-item nav-link" href="{{ url_for('users.register') }}">Register</a>
                       {% endif %}
                   </div>
                 </div>

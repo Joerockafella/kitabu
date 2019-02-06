@@ -46,7 +46,7 @@
                                     <small>{{ review_count }}</small>
                                 </button>
                             </p>
-                            <form action="{{ url_for('book', book_id=book.id) }}"  method="POST">
+                            <form action="{{ url_for('main.book', book_id=book.id) }}"  method="POST">
                                 <div class="row">
                                     <div class="rating">
                                         <input type="radio" id="star5" name="rating" value="5" /><label for="star5" title="Excellent">5 stars</label>
@@ -99,11 +99,11 @@
                 <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + review.author.image_file) }}">
                 <div class="media-body">
                 <div class="article-metadata">
-                    <a class="mr-2 text-info" href="{{ url_for('user_reviews', book_id=book.id, username=review.author.username) }}">{{ review.author.username }}</a>
+                    <a class="mr-2 text-info" href="{{ url_for('users.user_reviews', book_id=book.id, username=review.author.username) }}">{{ review.author.username }}</a>
                     <small class="text-muted">{{ review.date_posted.strftime('%Y-%m-%d') }}</small>
                     <small class="text-muted float-right">{{ review.rating }} / 5 <span class="fa fa-star checked"></span></small>
                 </div>
-                <h5><a class="article-title text-info" href="{{ url_for('review', book_id=book.id, review_id=review.id) }}">{{ review.title }}</a></h5>
+                <h5><a class="article-title text-info" href="{{ url_for('reviews.review', book_id=book.id, review_id=review.id) }}">{{ review.title }}</a></h5>
                 <p class="article-content">{{ review.content }}</p>
                 </div>
             </article>
