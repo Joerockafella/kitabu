@@ -27,27 +27,30 @@ def home():
 
 
 # to update
+@main.route("/home", methods=['POST'])
 @main.route("/", methods=['POST'])
 @login_required
 def search():
-    """ Search for books based on user-supplied criteria """
+    """ Search for books """
     form = SearchForm()
     if form.validate_on_submit():
+        #page = request.args.get('page', 1, type=int)
         search_key = request.form.get('search')
-        book_query = Book.query
-        search_query = book_query.filter(
+        #book_query = Book.query
+        search_query = Book.query.filter(
             or_(
                 Book.title.like(search_key),
                 Book.author.like(search_key),
                 Book.isbn.like(search_key)
             )
-        ).all()
-        books = search_query
-        if not books:
+        )
+        book_results = search_query.all()
+        #paginate = Book.query.paginate(page=page, per_page=16)
+        if not book_results:
             flash('Could not found that book, Sorry!', 'danger')
             return redirect(url_for('main.home'))
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-        return render_template('home.html', books=books, image_file=image_file, form=form)
+        return render_template('home.html', book_results=book_results, image_file=image_file, form=form)
 
 
 @main.route("/books/<int:book_id>", methods=['GET', 'POST'])
@@ -90,7 +93,7 @@ def book(book_id):
 
 @main.route("/api/<string:isbn>", methods=["GET"])
 def api(isbn):
-    book_isbn = Book.query.get(isbn)
+
     book = Book.query.filter(
         Book.isbn.like(isbn)
     ).first()

@@ -33,9 +33,7 @@ def login():
         if user and bcrypt.check_password_hash(user.password, form.password.data):
             login_user(user, remember=form.remember.data)
             next_page = request.args.get('next')
-            #user_name = user.username
-            #user_name = User.query.filter_by(username=User.username).first()
-            flash('Hey {user_name}. You are now successfully logged in!', 'success')
+            flash(f'Welcome {current_user.username}! You are now successfully logged in!', 'success')
             return redirect(next_page) if next_page else redirect(url_for('main.home'))
         else:
             flash('Login Unsuccessful. Please check your email or password', 'danger')
@@ -93,15 +91,20 @@ def user_reviews(username, book_id):
 
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
-    if current_user.is_authenticated:
-        return redirect(url_for('main.home'))
+    #if current_user.is_authenticated:
+        #return redirect(url_for('main.home'))
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
         send_reset_email(user)
         flash('An email has been sent with instructions to reset your password.', 'info')
         return redirect(url_for('users.login'))
+    if current_user.is_authenticated:
+        logout_user()
+        #image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
+        return render_template('reset_request.html', title='Reset Password', form=form)
     return render_template('reset_request.html', title='Reset Password', form=form)
+
 
 @users.route("/reset_password/<token>", methods=['GET', 'POST'])
 def reset_token(token):

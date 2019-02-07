@@ -8,7 +8,7 @@ from kitabu.models import User
 
 # Creating the Registration Form
 class RegistrationForm(FlaskForm):
-    username = StringField('Username', validators=[DataRequired(), Length(min=3, max=20)])
+    username = StringField('Name', validators=[DataRequired(), Length(min=3, max=20)])
     email = StringField('Email', validators=[DataRequired(), Email()])
     password = PasswordField('Password', validators=[DataRequired()])
     confirm_password = PasswordField('Confirm Password', validators=[DataRequired(), EqualTo('password')])

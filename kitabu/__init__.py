@@ -27,16 +27,18 @@ def create_app(config_class=Config):
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app)
-
+    migrate.init_app(app) #migrate.init_app(app, db)
+    #manager.init_app(app)
     mail.init_app(app)
 
     from kitabu.users.routes import users
     from kitabu.reviews.routes import reviews
     from kitabu.main.routes import main
+    from kitabu.errors.handlers import errors
     app.register_blueprint(users)
     app.register_blueprint(reviews)
     app.register_blueprint(main)
+    app.register_blueprint(errors)
 
 
     return app

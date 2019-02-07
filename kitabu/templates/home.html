@@ -29,9 +29,21 @@
             </div>
         {% endif %}
         </div>
-        
-            <div class="row mx-auto">
-                {% for book in books.items %}
+        <div class="row mx-auto">
+        {% if book_results %}
+            {% for result in book_results %}
+                <div class="d-flex flex-wrap mx-auto">
+                    <div class="p-2 m-2 img-thumbnail">
+                        <a href="{{ url_for('main.book', book_id=result.id) }}">
+                            <img src="http://covers.openlibrary.org/b/isbn/{{ result.isbn }}-M.jpg" alt="Book image" class="card_img">
+                        </a>
+                        <h6 class="text-info mt-2"><a href="{{ url_for('main.book', book_id=result.id) }}">{{result.title}}</a></h6>
+                        <small><p class="text-info mb-0">by {{result.author}}, {{result.year}}</p></small>
+                    </div>
+                </div>
+            {% endfor %}
+        {% else %}
+            {% for book in books.items %}
                 <div class="d-flex flex-wrap mx-auto">
                     <div class="p-2 m-2 img-thumbnail">
                         <a href="{{ url_for('main.book', book_id=book.id) }}">
@@ -41,20 +53,21 @@
                         <small><p class="text-info mb-0">by {{book.author}}, {{book.year}}</p></small>
                     </div>
                 </div>
-                {% endfor %}
+            {% endfor %}
             </div> 
             <div class="text-center m-4">
-                {% for page_num in books.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
-                    {% if page_num %}
-                        {% if books.page == page_num %}
-                        <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+            {% for page_num in books.iter_pages(left_edge=1, right_edge=1, left_current=1, right_current=2) %}
+                {% if page_num %}
+                    {% if books.page == page_num %}
+                            <a class="btn btn-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
                     {% else %}
-                        <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
+                            <a class="btn btn-outline-info mb-4" href="{{ url_for('main.home', page=page_num) }}">{{ page_num }}</a>
                     {% endif %}
                 {% else %}
                     ...
                 {% endif %}
             {% endfor %}
-            </div>       
+            </div>
+        {% endif %}
     </div>
 {% endblock content %}
