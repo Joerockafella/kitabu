@@ -3,37 +3,39 @@
 {% block content %} 
     <div class="container">
         <div class="jumbotron bg-white text-white text-center pt-4 mb-0">
-            <div class="m-auto">
+            <div class="m-auto kitabu-header">
                 <img src="{{ url_for('static', filename = 'images/_book.png') }}" width="100" height="85">
                 <h1 class="mb-4 mr-4 display-4 font-weight-bold text-secondary">Kitabu Review</h1> 
             </div>
             <hr>    
             <p class="text-info">This is a book review website. Register, then search for books, leave reviews, and see the reviews made by other people.</p>
             {% if current_user.is_authenticated %}
-            <div class="input-group mt-4">
-                <form class="form-inline mx-auto" action="" method="POST">
-                    {{ form.hidden_tag() }}
-                    {% if form.search.errors %}
-                    {{ form.search(class="form-control form-control is-invalid") }}
-                    {{ form.submit(class="btn btn-secondary") }}
-                        <div class="invalid-feeback">
-                            {% for error in form.search.errors%}
-                                <span>{{ error }}</span>
-                            {% endfor %}
-                        </div>
-                    {% else %}
-                        {{ form.search(class="form-control form-control", placeholder='Title/ Author / ISBN') }}    
+            <div class="input-group mt-4 col-sm">
+                <form class="form-inline m-auto float-right" action="" method="POST">
+                    <div class="form-group mb-2">
+                        {{ form.hidden_tag() }}
+                        {% if form.search.errors %}
+                        {{ form.search(class="form-control form-control is-invalid") }}
                         {{ form.submit(class="btn btn-secondary") }}
-                    {% endif %}
+                            <div class="invalid-feeback">
+                                {% for error in form.search.errors%}
+                                    <span>{{ error }}</span>
+                                {% endfor %}
+                            </div>
+                        {% else %}
+                            {{ form.search(class="form-control form-control mr-0 mb-2", placeholder='Title/ Author / ISBN') }}
+                            {{ form.submit(class="btn btn-secondary mb-2") }}
+                        {% endif %}
+                    </div>
                 </form>
             </div>
         {% endif %}
         </div>
-        <div class="row mx-auto">
+        <div class="row mx-auto home-responsive">
         {% if book_results %}
             {% for result in book_results %}
-                <div class="d-flex flex-wrap mx-auto">
-                    <div class="p-2 m-2 img-thumbnail">
+                <div class="d-flex flex-wrap mx-auto shadow mb-4 mob-responsive">
+                    <div class="p-2 m-2 img-thumbnail mob-img">
                         <a href="{{ url_for('main.book', book_id=result.id) }}">
                             <img src="http://covers.openlibrary.org/b/isbn/{{ result.isbn }}-M.jpg" alt="Book image" class="card_img">
                         </a>
@@ -44,8 +46,8 @@
             {% endfor %}
         {% else %}
             {% for book in books.items %}
-                <div class="d-flex flex-wrap mx-auto">
-                    <div class="p-2 m-2 img-thumbnail">
+                <div class="d-flex flex-wrap mx-auto shadow mb-4 mob-responsive">
+                    <div class="p-2 m-2 img-thumbnail mob-img">
                         <a href="{{ url_for('main.book', book_id=book.id) }}">
                             <img src="http://covers.openlibrary.org/b/isbn/{{ book.isbn }}-M.jpg" alt="Book image" class="card_img">
                         </a>

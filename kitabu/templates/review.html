@@ -1,7 +1,7 @@
 {% extends "layout.html" %}
 
 {% block content %}
-    <div class="content p-3 mx-auto col-6">
+    <div class="content p-3 mx-auto col-sm-6">
         <article class="media content-section">
             <img class="rounded-circle article-img" src="{{ url_for('static', filename='profile_pics/' + review.author.image_file) }}">
             <div class="media-body">

@@ -16,7 +16,7 @@ body {
   }
   
   .site-header .navbar-nav .nav-link.active {
-    font-weight: 500;
+    font-weight: 500vw;
   }
   hr {
     height: 8px;
@@ -142,4 +142,60 @@ body {
     width: 200px;
     height: 200px;
   }
-  
+
+  /* Media query */
+  @media only screen and (max-width: 750px) {
+  /* For mobile phones: */
+   .card_img {
+     width: 100%;
+  }
+
+  .home-responsive {
+    width: 100%;
+    padding: 0px;
+    margin: 0px;
+    display: flex;
+    flex-direction: row-reverse;
+    /*flex-wrap: wrap;*/
+  }
+
+    .mob-responsive {
+    width: 50%;
+    flex-wrap: wrap;
+    background: none;
+
+  }
+
+  .kitabu-header h1 {
+    font-size: 8vw;
+  }
+
+   .kitabu-header img {
+    width: 20%;
+    height: 20%;
+  }
+
+    .logo_link {
+    font-size: 5vw;
+  }
+
+  .book_font {
+  width: 100%;
+  font-size: 3vw;
+  }
+
+  book_img_div {
+  width: 100%;
+  }
+
+   .account-img {
+    height: 85px;
+    width: 85px;
+  }
+
+    .account-heading {
+    font-size: 7vw;
+  }
+
+
+}
