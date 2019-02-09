@@ -26,7 +26,6 @@ def home():
         return render_template("home.html", title='Home', books=books)
 
 
-# to update
 @main.route("/home", methods=['POST'])
 @main.route("/", methods=['POST'])
 @login_required
@@ -34,9 +33,7 @@ def search():
     """ Search for books """
     form = SearchForm()
     if form.validate_on_submit():
-        #page = request.args.get('page', 1, type=int)
         search_key = request.form.get('search')
-        #book_query = Book.query
         search_query = Book.query.filter(
             or_(
                 Book.title.like(search_key),
@@ -45,7 +42,6 @@ def search():
             )
         )
         book_results = search_query.all()
-        #paginate = Book.query.paginate(page=page, per_page=16)
         if not book_results:
             flash('Could not found that book, Sorry!', 'danger')
             return redirect(url_for('main.home'))

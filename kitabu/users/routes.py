@@ -1,13 +1,13 @@
 from flask import render_template, request, redirect, url_for, flash, Blueprint
 from kitabu import db, bcrypt
 from kitabu.users.forms import RegistrationForm, LoginForm, UpdateAccountForm, RequestResetForm, ResetPasswordForm
-from kitabu.main.forms import SearchForm
 from kitabu.models import User, Review, Book
 from flask_login import login_user, current_user, logout_user, login_required
 from kitabu.users.utils import save_picture, send_reset_email
 
 
 users = Blueprint('users', __name__)
+
 
 @users.route("/register", methods=['GET', 'POST'])
 def register():
@@ -22,6 +22,7 @@ def register():
         flash(f'Hey {form.username.data}, your account has been created! You are now able to login.', 'success')
         return redirect(url_for('users.login'))
     return render_template("register.html", title='Register', form=form)
+
 
 @users.route("/login", methods=['GET', 'POST'])
 def login():
@@ -70,8 +71,6 @@ def account():
 @login_required
 def user_reviews(username, book_id):
     if current_user.is_authenticated:
-        #to verify this form
-        form = SearchForm()
         book = Book.query.get(book_id)
         user = User.query.filter_by(username=username).first_or_404()
         reviews = Review.query.filter_by(author=user) \
@@ -86,13 +85,11 @@ def user_reviews(username, book_id):
 
         image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         return render_template("user_reviews.html", reviews=reviews, user=user, book=book,
-                               user_reviews_count=user_reviews_count, image_file=image_file, form=form)
+                               user_reviews_count=user_reviews_count, image_file=image_file)
 
 
 @users.route("/reset_password", methods=['GET', 'POST'])
 def reset_request():
-    #if current_user.is_authenticated:
-        #return redirect(url_for('main.home'))
     form = RequestResetForm()
     if form.validate_on_submit():
         user = User.query.filter_by(email=form.email.data).first()
@@ -101,7 +98,6 @@ def reset_request():
         return redirect(url_for('users.login'))
     if current_user.is_authenticated:
         logout_user()
-        #image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
         return render_template('reset_request.html', title='Reset Password', form=form)
     return render_template('reset_request.html', title='Reset Password', form=form)
 

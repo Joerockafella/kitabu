@@ -7,3 +7,4 @@ class ReviewForm(FlaskForm):
     title = StringField('Title', validators=[DataRequired()])
     content = TextAreaField('Comment', validators=[DataRequired()])
     submit = SubmitField('Submit')
+

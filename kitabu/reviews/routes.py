@@ -5,8 +5,8 @@ from kitabu.models import Review, Book
 from flask_login import current_user, login_required
 
 
-
 reviews = Blueprint('reviews', __name__)
+
 
 @reviews.route("/books/<int:book_id>/reviews/<int:review_id>")
 @login_required
