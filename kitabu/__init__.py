@@ -13,7 +13,7 @@ bcrypt = Bcrypt()
 login_manager = LoginManager()
 login_manager.login_view = 'users.login'
 login_manager.login_message_category = 'info'
-migrate = Migrate(db)
+migrate = Migrate()
 manager = Manager()
 migrate_command = MigrateCommand
 
@@ -27,7 +27,7 @@ def create_app(config_class=Config):
     db.init_app(app)
     bcrypt.init_app(app)
     login_manager.init_app(app)
-    migrate.init_app(app) #migrate.init_app(app, db)
+    migrate.init_app(app, db)
     #manager.init_app(app)
     mail.init_app(app)
 
