@@ -4,8 +4,8 @@ from flask import current_app
 from kitabu import db, login_manager, manager, migrate_command
 from flask_login import UserMixin
 
-#manager = manager(current_app)
 manager.add_command('db', migrate_command)
+
 
 @login_manager.user_loader
 def load_user(user_id):
@@ -38,6 +38,7 @@ class User(db.Model, UserMixin):
     def __repr__(self):
             return f"User('{self.username}', '{self.email}', '{self.image_file}', '{self.user_reviews}' )" #this is what will be printed
 
+
 class Review(db.Model):
     __tablename__ = "reviews"
     id = db.Column(db.Integer, primary_key=True)
@@ -51,6 +52,7 @@ class Review(db.Model):
     def __repr__(self):
             return f"Review('{self.title}', '{self.date_posted}', '{self.rating}', '{self.user_id}', '{self.book_id}')" 
 
+
 class Book(db.Model):
     __tablename__ = "books"
     id = db.Column(db.Integer, primary_key=True)
@@ -63,4 +65,3 @@ class Book(db.Model):
 
     def __repr__(self):
         return f"Book('{self.isbn}', '{self.title}', '{self.author}', '{self.year}', '{self.book_reviews}' )" 
-

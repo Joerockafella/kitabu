@@ -35,7 +35,7 @@ def update_review(book_id, review_id):
         form.title.data = review.title
         form.content.data = review.content
     image_file = url_for('static', filename='profile_pics/' + current_user.image_file)
-    return render_template("create_review.html", title='Update Review', image_file=image_file,
+    return render_template("update_review.html", title='Update Review', image_file=image_file,
                             form=form, legend='Update Review')
 
 
