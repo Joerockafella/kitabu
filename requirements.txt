@@ -53,7 +53,7 @@ psycopg2-binary==2.7.6.1
 ptyprocess==0.6.0
 pycparser==2.19
 pycrypto==2.6.1
-PyJWT==1.6.4
+PyJWT==2.4.0
 pylint==2.2.2
 pymacaroons==0.13.0
 PyNaCl==1.2.1
